@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 
 public class HuffmanCoding {
     private final String s;
-    private final int[] charFrequency = new int[27]; // 0-25 letters, 26 - space
+    private final int[] charFrequency = new int[28]; // 0-25 letters; 26 - space; 27 - ,
     private PriorityQueue<Character> characters = new PriorityQueue<>();
     private PriorityQueue<Branch> branches = new PriorityQueue<>();
 
@@ -45,8 +45,24 @@ public class HuffmanCoding {
                 continue;
             }
             char currentChar = (char) ('a' + i);
+            if (i == 26) {
+                currentChar = ' ';
+            }
+            else if (i == 27) {
+                currentChar = ',';
+            }
             Character character = new Character(currentChar, charFrequency[i]);
             characters.add(character);
+        }
+        if (characters.size() == 1 || characters.size() == 2) {
+            Character left = characters.poll();
+            Character right = characters.poll();
+            if (right != null) {
+                branches.add(new Branch<Character>(left, right, left.getFrequency() + right.getFrequency()));
+            }
+            else {
+                branches.add(new Branch<Character>(left, null, left.getFrequency()));
+            }
         }
         while (!characters.isEmpty()) {
             Character leastFrequent = characters.poll();
@@ -80,6 +96,10 @@ public class HuffmanCoding {
         for (int i = 0; i < s.length(); i++) {
             if (s.charAt(i) == ' ') {
                 charFrequency[26]++;
+                continue;
+            }
+            else if (s.charAt(i) == ',') {
+                charFrequency[27]++;
                 continue;
             }
             charFrequency[s.charAt(i) - 'a']++;
