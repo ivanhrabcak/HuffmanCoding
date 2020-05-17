@@ -39,4 +39,13 @@ public class Branch<E> implements Comparable<Branch> {
     public int compareTo(Branch o) {
         return value - o.value;
     }
+
+    @Override
+    public String toString() {
+        return "Branch{" +
+                "left=" + left +
+                ", right=" + right +
+                ", value=" + value +
+                '}';
+    }
 }

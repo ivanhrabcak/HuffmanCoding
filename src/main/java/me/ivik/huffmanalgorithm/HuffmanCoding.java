@@ -7,7 +7,7 @@ import java.util.PriorityQueue;
 
 public class HuffmanCoding {
     private final String s;
-    private final int[] charFrequency = new int[26];
+    private final int[] charFrequency = new int[27]; // 0-25 letters, 26 - space
     private PriorityQueue<Character> characters = new PriorityQueue<>();
     private PriorityQueue<Branch> branches = new PriorityQueue<>();
 
@@ -78,6 +78,10 @@ public class HuffmanCoding {
 
     private void createCharFrequencyArray() {
         for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                charFrequency[26]++;
+                continue;
+            }
             charFrequency[s.charAt(i) - 'a']++;
         }
 
