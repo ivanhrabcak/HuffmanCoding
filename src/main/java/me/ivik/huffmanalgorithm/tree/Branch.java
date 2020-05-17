@@ -1,39 +1,51 @@
 package me.ivik.huffmanalgorithm.tree;
 
-import java.util.Comparator;
+public class Branch<E> implements Comparable<Branch> {
+    private E left;
+    private E right;
+    private int value;
 
-public class Branch {
-    private Branch left;
-    private Branch right;
-    private CharacterOrInteger value;
-
-    public Branch(Branch left, Branch right, CharacterOrInteger value) {
+    public Branch(E left, E right, int value) {
         this.left = left;
         this.right = right;
         this.value = value;
     }
 
-    public Branch getLeft() {
+    public E getLeft() {
         return left;
     }
 
-    public void setLeft(Branch left) {
+    public void setLeft(E left) {
         this.left = left;
     }
 
-    public Branch getRight() {
+    public E getRight() {
         return right;
     }
 
-    public void setRight(Branch right) {
+    public void setRight(E right) {
         this.right = right;
     }
 
-    public CharacterOrInteger getValue() {
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public int getValue() {
         return value;
     }
 
-    public void setValue(CharacterOrInteger value) {
-        this.value = value;
+    @Override
+    public int compareTo(Branch o) {
+        return value - o.value;
+    }
+
+    @Override
+    public String toString() {
+        return "Branch{" +
+                "left=" + left +
+                ", right=" + right +
+                ", value=" + value +
+                '}';
     }
 }
