@@ -6,7 +6,7 @@ import java.util.PriorityQueue;
 
 public class Main {
     public static void main(String[] args) {
-        HuffmanCoding huffmanCoding = new HuffmanCoding("aaababbzzccaaazzbbbz");
+        HuffmanCoding huffmanCoding = new HuffmanCoding("aaababbzzmaloipccaaalzzbbbz");
         PriorityQueue<Branch> priorityQueue = huffmanCoding.getTree();
         System.out.println(priorityQueue);
 

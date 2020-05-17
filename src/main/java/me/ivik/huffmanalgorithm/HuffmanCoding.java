@@ -49,9 +49,7 @@ public class HuffmanCoding {
             characters.add(character);
         }
         while (!characters.isEmpty()) {
-            System.out.println("iteration");
-            System.out.println(characters);
-            Character leastFrequent = removeLastElement(characters);
+            Character leastFrequent = characters.poll();
             if (characters.isEmpty()) {
                 Branch allBranches = branches.poll();
                 int value = allBranches.getValue() + leastFrequent.getFrequency();
@@ -60,7 +58,7 @@ public class HuffmanCoding {
                 branches.add(branch);
                 return branches;
             }
-            Character secondLeastFrequent =  removeLastElement(characters);
+            Character secondLeastFrequent =  characters.poll();
             int value = leastFrequent.getFrequency() + secondLeastFrequent.getFrequency();
             Branch<Character> branch = new Branch<>(leastFrequent, secondLeastFrequent, value);
             branches.add(branch);
@@ -69,10 +67,11 @@ public class HuffmanCoding {
                 continue;
             }
 
-            Branch smallestBranch = removeLastElement(branches);
-            Branch secondSmallestBranch = removeLastElement(branches);
+            Branch smallestBranch = branches.poll();
+            Branch secondSmallestBranch = branches.poll();
             value = smallestBranch.getValue() + secondSmallestBranch.getValue();
             Branch<Branch> joinedBranch = new Branch<>(smallestBranch, secondSmallestBranch, value);
+            branches.add(joinedBranch);
         }
         return branches;
     }
