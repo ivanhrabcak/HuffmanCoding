@@ -1,45 +1,64 @@
 package me.ivik.huffmanalgorithm;
 
+import com.sun.source.tree.Tree;
 import me.ivik.huffmanalgorithm.tree.Branch;
 import me.ivik.huffmanalgorithm.tree.Character;
 
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class HuffmanCoding {
-    private final String s;
+    public final String s;
     private final int[] charFrequency = new int[28]; // 0-25 letters; 26 - space; 27 - ,
     private PriorityQueue<Character> characters = new PriorityQueue<>();
     private PriorityQueue<Branch> branches = new PriorityQueue<>();
 
+    private Map<java.lang.Character, List<Byte>> characterCodes = new HashMap<>();
 
-    private int getLetterFrequency(char letter) {
-        return charFrequency[letter - 'a'];
+    public HuffmanCoding(String s) {
+        this.s = s;
+        createCharFrequencyArray();
     }
 
-    public int[] getCharFrequency() {
-        return charFrequency;
-    }
-
-    private <E> E removeLastElement(PriorityQueue<E> priorityQueue) { // pretty bad
-        PriorityQueue<E> storage = new PriorityQueue<>();
-        E removedElement = null;
-        int originalSize = priorityQueue.size();
-        for (int i = 0; i < originalSize; i++) {
-            if (i != originalSize - 1) {
-                storage.add(priorityQueue.poll());
-            }
-            else {
-                removedElement = priorityQueue.poll();
+    private int countDifferentCharacters() {
+        int counter = 0;
+        for (int characterFrequency : charFrequency) {
+            if (characterFrequency != 0) {
+                counter++;
             }
         }
-        for (int i = 0; i < storage.size(); i++) {
-            priorityQueue.add(storage.poll());
-        }
-
-        return removedElement;
+        return counter;
     }
 
-    public PriorityQueue<Branch> getTree() {
+    private void createCharacterCodes(Branch tree) {
+        
+    }
+
+    public byte[] encode() {
+        Branch tree = getTree();
+        createCharacterCodes(tree);
+
+    }
+
+//    private <E> E removeLastElement(PriorityQueue<E> priorityQueue) { // FIXME
+//        PriorityQueue<E> storage = new PriorityQueue<>();
+//        E removedElement = null;
+//        int originalSize = priorityQueue.size();
+//        for (int i = 0; i < originalSize; i++) {
+//            if (i != originalSize - 1) {
+//                storage.add(priorityQueue.poll());
+//            }
+//            else {
+//                removedElement = priorityQueue.poll();
+//            }
+//        }
+//        for (int i = 0; i < storage.size(); i++) {
+//            priorityQueue.add(storage.poll());
+//        }
+//
+//        return removedElement;
+//    }
+
+    public Branch getTree() {
         for (int i = 0; i < charFrequency.length; i++) {
             if (charFrequency[i] == 0) {
                 continue;
@@ -71,8 +90,7 @@ public class HuffmanCoding {
                 int value = allBranches.getValue() + leastFrequent.getFrequency();
 
                 Branch<Comparable> branch = new Branch<>(allBranches, leastFrequent, value);
-                branches.add(branch);
-                return branches;
+                return branch;
             }
             Character secondLeastFrequent =  characters.poll();
             int value = leastFrequent.getFrequency() + secondLeastFrequent.getFrequency();
@@ -89,7 +107,7 @@ public class HuffmanCoding {
             Branch<Branch> joinedBranch = new Branch<>(smallestBranch, secondSmallestBranch, value);
             branches.add(joinedBranch);
         }
-        return branches;
+        return branches.poll();
     }
 
     private void createCharFrequencyArray() {
@@ -105,11 +123,6 @@ public class HuffmanCoding {
             charFrequency[s.charAt(i) - 'a']++;
         }
 
-    }
-
-    public HuffmanCoding(String s) {
-        this.s = s;
-        createCharFrequencyArray();
     }
 }
 
