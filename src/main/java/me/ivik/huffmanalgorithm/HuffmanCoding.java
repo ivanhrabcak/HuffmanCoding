@@ -30,13 +30,13 @@ public class HuffmanCoding {
     }
 
     private void createCharacterCodes(Branch tree) {
-        
+
     }
 
     public byte[] encode() {
         Branch tree = getTree();
         createCharacterCodes(tree);
-
+        return null;
     }
 
 //    private <E> E removeLastElement(PriorityQueue<E> priorityQueue) { // FIXME
