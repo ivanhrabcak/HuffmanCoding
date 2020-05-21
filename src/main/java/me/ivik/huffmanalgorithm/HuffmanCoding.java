@@ -3,6 +3,7 @@ package me.ivik.huffmanalgorithm;
 import com.sun.source.tree.Tree;
 import me.ivik.huffmanalgorithm.tree.Branch;
 import me.ivik.huffmanalgorithm.tree.Character;
+import me.ivik.huffmanalgorithm.tree.Path;
 
 import java.util.*;
 
@@ -13,6 +14,8 @@ public class HuffmanCoding {
     private PriorityQueue<Branch> branches = new PriorityQueue<>();
 
     private Map<java.lang.Character, List<Byte>> characterCodes = new HashMap<>();
+    private List<Byte> currentPath = new ArrayList<>();
+    private List<Path> pathBuffer = new ArrayList<>();
 
     public HuffmanCoding(String s) {
         this.s = s;
@@ -30,7 +33,24 @@ public class HuffmanCoding {
     }
 
     private void createCharacterCodes(Branch tree) {
-
+        Branch currentBranch = tree;
+        while (true) {
+            if (currentBranch.getLeft() instanceof Character) {
+                currentPath.add((byte) 0);
+                Byte[] bytes = new Byte[currentPath.size()];
+                currentPath.toArray(bytes);
+                Path currentPath = new Path((Branch<Character>) currentBranch.getLeft(), bytes);
+                if (pathBuffer.contains(currentPath)) {
+                    // what now??
+                }
+                else {
+                    pathBuffer.add(currentPath);
+                }
+            }
+            else {
+                // ??
+            }
+        }
     }
 
     public byte[] encode() {
@@ -38,6 +58,7 @@ public class HuffmanCoding {
         createCharacterCodes(tree);
         return null;
     }
+
 
 //    private <E> E removeLastElement(PriorityQueue<E> priorityQueue) { // FIXME
 //        PriorityQueue<E> storage = new PriorityQueue<>();
