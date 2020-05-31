@@ -1,9 +1,6 @@
 package me.ivik.huffmanalgorithm;
 
-import com.sun.source.tree.Tree;
-import me.ivik.huffmanalgorithm.tree.Branch;
-import me.ivik.huffmanalgorithm.tree.Character;
-import me.ivik.huffmanalgorithm.tree.Path;
+import me.ivik.huffmanalgorithm.tree.Node;
 
 import java.util.*;
 
@@ -11,11 +8,11 @@ public class HuffmanCoding {
     public final String s;
     private final int[] charFrequency = new int[28]; // 0-25 letters; 26 - space; 27 - ,
     private PriorityQueue<Character> characters = new PriorityQueue<>();
-    private PriorityQueue<Branch> branches = new PriorityQueue<>();
+    private PriorityQueue<Node> priorityQueue = new PriorityQueue<>();
 
-    private Map<java.lang.Character, List<Byte>> characterCodes = new HashMap<>();
-    private List<Byte> currentPath = new ArrayList<>();
-    private List<Path> pathBuffer = new ArrayList<>();
+    private Map<Character, String> characterCodes = new HashMap<>();
+
+    private Node tree;
 
     public HuffmanCoding(String s) {
         this.s = s;
@@ -32,31 +29,114 @@ public class HuffmanCoding {
         return counter;
     }
 
-    private void createCharacterCodes(Branch tree) {
-        Branch currentBranch = tree;
-        while (true) {
-            if (currentBranch.getLeft() instanceof Character) {
-                currentPath.add((byte) 0);
-                Byte[] bytes = new Byte[currentPath.size()];
-                currentPath.toArray(bytes);
-                Path currentPath = new Path((Branch<Character>) currentBranch.getLeft(), bytes);
-                if (pathBuffer.contains(currentPath)) {
-                    // what now??
+    private <E> Stack<E> asStack(E[] array) {
+        Stack<E> output = new Stack<>();
+        for (E element : array) {
+            output.push(element);
+        }
+        return output;
+    }
+
+    public String decode(Byte[] input, Node tree) {
+        Stack<Byte> encoded = asStack(input);
+        Node currentNode = tree;
+        String output = "";
+        while (encoded.size() != 0) {
+            if (encoded.peek() == 1) {
+                currentNode = currentNode.left;
+                if (currentNode.isChar()) {
+                    output = output + currentNode.character;
+                    currentNode = tree;
                 }
-                else {
-                    pathBuffer.add(currentPath);
-                }
+                encoded.pop();
             }
             else {
-                // ??
+                currentNode = currentNode.right;
+                if (currentNode.isChar()) {
+                    output = output + currentNode.character;
+                    currentNode = tree;
+                }
+                encoded.pop();
             }
+        }
+        return output.toString();
+    }
+
+    public void printTree(Node tree) {
+        // 19
+        // C: 19, Queue = [9, 10]
+        // C: 10, Queue = [9]
+        // C: 9,  Queue = [4, 5]
+        // C: 5,  Queue = [2, 3, 4]
+        // C: 4,  Queue = [2, 3]
+        // C: 3,  Queue = [1, 2, 2]
+
+        // 19
+        // C: 19, Stack = [9, 10]
+        // C: 9,  Stack = [4, 5, 10]
+        // C: 4,  Stack = [5, 10]
+        // C: 5,  Stack = [2, 3, 10]
+        // C: 2,  Stack = [3, 10]
+        // C: 3,  Stack = [1, 2, 10]
+        // C: 1,  Stack = [2, 10]
+        // C: 2,  Stack = [10]
+        // C:
+
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(tree);
+        while (queue.size() != 0) {
+            Node currentNode = queue.poll();
+            System.out.println("At: " + currentNode.frequency);
+            if (currentNode.left != null)
+                queue.add(currentNode.left);
+            if (currentNode.right != null)
+                queue.add(currentNode.right);
+
+            // if (currentNode.isChar())
+            //     System.out.println(currentNode.character.toString());
+        }
+
+        // System.out.println("At: " + tree.frequency);
+        // if (tree.isChar())
+        //     System.out.printf(tree.character.toString());
+    }
+
+    public Map<Character, String> getCharacterCodes() {
+        createCharacterCodes(getTree(), "");
+        return characterCodes;
+    }
+
+    public void createCharacterCodes(Node tree, String currentPath) {
+        if (tree.isChar()) {
+            characterCodes.put(tree.character, currentPath);
+            System.out.println(currentPath);
+            return;
+        }
+        System.out.println(currentPath);
+        createCharacterCodes(tree.right, currentPath + "1");
+        System.out.println(currentPath);
+        createCharacterCodes(tree.left, currentPath + "0");
+        System.out.println(currentPath);
+    }
+
+    public void appendByteStringToList(String byteString, List<Byte> arrayList) {
+        for (int i = 0; i < byteString.length(); i++) {
+            byte currentByte = Byte.parseByte(String.valueOf(byteString.charAt(i))); // :/
+            arrayList.add(currentByte);
         }
     }
 
-    public byte[] encode() {
-        Branch tree = getTree();
-        createCharacterCodes(tree);
-        return null;
+    public Byte[] encode() {
+        List<Byte> encodedString = new ArrayList<>();
+        createCharacterCodes(getTree(), "");
+        for (int i = 0; i < s.length(); i++) {
+            char currentChar = s.charAt(i);
+            appendByteStringToList(characterCodes.get(currentChar), encodedString);
+        }
+        Byte[] output = new Byte[encodedString.size()];
+        encodedString.toArray(output);
+        return output;
     }
 
 
@@ -79,7 +159,7 @@ public class HuffmanCoding {
 //        return removedElement;
 //    }
 
-    public Branch getTree() {
+    public Node getTree() {
         for (int i = 0; i < charFrequency.length; i++) {
             if (charFrequency[i] == 0) {
                 continue;
@@ -91,44 +171,21 @@ public class HuffmanCoding {
             else if (i == 27) {
                 currentChar = ',';
             }
-            Character character = new Character(currentChar, charFrequency[i]);
-            characters.add(character);
+            priorityQueue.add(new Node(charFrequency[i], currentChar));
         }
-        if (characters.size() == 1 || characters.size() == 2) {
-            Character left = characters.poll();
-            Character right = characters.poll();
-            if (right != null) {
-                branches.add(new Branch<Character>(left, right, left.getFrequency() + right.getFrequency()));
-            }
-            else {
-                branches.add(new Branch<Character>(left, null, left.getFrequency()));
-            }
+
+        while (priorityQueue.size() != 1) {
+            Node leastFrequent = priorityQueue.poll();
+            Node secondLeastFrequent = priorityQueue.poll();
+
+            // if (leastFrequent.isChar() && secondLeastFrequent.isChar()) {
+            Node joinedNode = new Node(leastFrequent, secondLeastFrequent, leastFrequent.frequency + secondLeastFrequent.frequency);
+            priorityQueue.add(joinedNode);
+
+            // }
         }
-        while (!characters.isEmpty()) {
-            Character leastFrequent = characters.poll();
-            if (characters.isEmpty()) {
-                Branch allBranches = branches.poll();
-                int value = allBranches.getValue() + leastFrequent.getFrequency();
 
-                Branch<Comparable> branch = new Branch<>(allBranches, leastFrequent, value);
-                return branch;
-            }
-            Character secondLeastFrequent =  characters.poll();
-            int value = leastFrequent.getFrequency() + secondLeastFrequent.getFrequency();
-            Branch<Character> branch = new Branch<>(leastFrequent, secondLeastFrequent, value);
-            branches.add(branch);
-
-            if (branches.isEmpty() || branches.size() == 1) {
-                continue;
-            }
-
-            Branch smallestBranch = branches.poll();
-            Branch secondSmallestBranch = branches.poll();
-            value = smallestBranch.getValue() + secondSmallestBranch.getValue();
-            Branch<Branch> joinedBranch = new Branch<>(smallestBranch, secondSmallestBranch, value);
-            branches.add(joinedBranch);
-        }
-        return branches.poll();
+        return priorityQueue.poll();
     }
 
     private void createCharFrequencyArray() {
