@@ -19,16 +19,6 @@ public class HuffmanCoding {
         createCharFrequencyArray();
     }
 
-    private int countDifferentCharacters() {
-        int counter = 0;
-        for (int characterFrequency : charFrequency) {
-            if (characterFrequency != 0) {
-                counter++;
-            }
-        }
-        return counter;
-    }
-
     private <E> Stack<E> asStack(E[] array) {
         Stack<E> output = new Stack<>();
         for (E element : array) {
@@ -59,47 +49,7 @@ public class HuffmanCoding {
                 encoded.pop();
             }
         }
-        return output.toString();
-    }
-
-    public void printTree(Node tree) {
-        // 19
-        // C: 19, Queue = [9, 10]
-        // C: 10, Queue = [9]
-        // C: 9,  Queue = [4, 5]
-        // C: 5,  Queue = [2, 3, 4]
-        // C: 4,  Queue = [2, 3]
-        // C: 3,  Queue = [1, 2, 2]
-
-        // 19
-        // C: 19, Stack = [9, 10]
-        // C: 9,  Stack = [4, 5, 10]
-        // C: 4,  Stack = [5, 10]
-        // C: 5,  Stack = [2, 3, 10]
-        // C: 2,  Stack = [3, 10]
-        // C: 3,  Stack = [1, 2, 10]
-        // C: 1,  Stack = [2, 10]
-        // C: 2,  Stack = [10]
-        // C:
-
-
-        Queue<Node> queue = new LinkedList<>();
-        queue.add(tree);
-        while (queue.size() != 0) {
-            Node currentNode = queue.poll();
-            System.out.println("At: " + currentNode.frequency);
-            if (currentNode.left != null)
-                queue.add(currentNode.left);
-            if (currentNode.right != null)
-                queue.add(currentNode.right);
-
-            // if (currentNode.isChar())
-            //     System.out.println(currentNode.character.toString());
-        }
-
-        // System.out.println("At: " + tree.frequency);
-        // if (tree.isChar())
-        //     System.out.printf(tree.character.toString());
+        return output;
     }
 
     public Map<Character, String> getCharacterCodes() {
@@ -138,26 +88,6 @@ public class HuffmanCoding {
         encodedString.toArray(output);
         return output;
     }
-
-
-//    private <E> E removeLastElement(PriorityQueue<E> priorityQueue) { // FIXME
-//        PriorityQueue<E> storage = new PriorityQueue<>();
-//        E removedElement = null;
-//        int originalSize = priorityQueue.size();
-//        for (int i = 0; i < originalSize; i++) {
-//            if (i != originalSize - 1) {
-//                storage.add(priorityQueue.poll());
-//            }
-//            else {
-//                removedElement = priorityQueue.poll();
-//            }
-//        }
-//        for (int i = 0; i < storage.size(); i++) {
-//            priorityQueue.add(storage.poll());
-//        }
-//
-//        return removedElement;
-//    }
 
     public Node getTree() {
         for (int i = 0; i < charFrequency.length; i++) {
