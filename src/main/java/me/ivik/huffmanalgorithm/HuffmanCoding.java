@@ -56,14 +56,10 @@ public class HuffmanCoding {
     public void createCharacterCodes(Node tree, String currentPath) {
         if (tree.isChar()) {
             characterCodes.put(tree.character, currentPath);
-            System.out.println(currentPath);
             return;
         }
-        System.out.println(currentPath);
         createCharacterCodes(tree.right, currentPath + "1");
-        System.out.println(currentPath);
         createCharacterCodes(tree.left, currentPath + "0");
-        System.out.println(currentPath);
     }
 
     public void appendByteStringToList(String byteString, List<Byte> arrayList) {
