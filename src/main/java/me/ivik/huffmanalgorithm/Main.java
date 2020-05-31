@@ -2,6 +2,10 @@ package me.ivik.huffmanalgorithm;
 
 import me.ivik.huffmanalgorithm.tree.Node;
 
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
 public class Main {
     public static void main(String[] args) {
         HuffmanCoding huffmanCoding = new HuffmanCoding("this is a test");

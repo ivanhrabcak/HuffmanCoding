@@ -19,37 +19,33 @@ public class HuffmanCoding {
         createCharFrequencyArray();
     }
 
-    private <E> Stack<E> asStack(E[] array) {
-        Stack<E> output = new Stack<>();
-        for (E element : array) {
-            output.push(element);
-        }
-        return output;
+    private <E> Queue<E> asQueue(E[] array) {
+        return new LinkedList<>(Arrays.asList(array));
     }
 
     public String decode(Byte[] input, Node tree) {
-        Stack<Byte> encoded = asStack(input);
+        Queue<Byte> encoded = asQueue(input);
         Node currentNode = tree;
-        String output = "";
+        StringBuilder output = new StringBuilder();
         while (encoded.size() != 0) {
-            if (encoded.peek() == 1) {
+            if (encoded.peek() == 0) {
                 currentNode = currentNode.left;
                 if (currentNode.isChar()) {
-                    output = output + currentNode.character;
+                    output.append(currentNode.character);
                     currentNode = tree;
                 }
-                encoded.pop();
+                encoded.poll();
             }
             else {
                 currentNode = currentNode.right;
                 if (currentNode.isChar()) {
-                    output = output + currentNode.character;
+                    output.append(currentNode.character);
                     currentNode = tree;
                 }
-                encoded.pop();
+                encoded.poll();
             }
         }
-        return output;
+        return output.toString();
     }
 
     public Map<Character, String> getCharacterCodes() {
