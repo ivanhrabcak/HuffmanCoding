@@ -1,7 +1,9 @@
 package me.ivik.huffmanalgorithm;
 
+import me.ivik.huffmanalgorithm.bitstreams.BitFileWriter;
 import me.ivik.huffmanalgorithm.tree.Node;
 
+import java.io.IOException;
 import java.util.*;
 
 public class HuffmanCoding {
@@ -79,6 +81,36 @@ public class HuffmanCoding {
         Byte[] output = new Byte[encodedString.size()];
         encodedString.toArray(output);
         return output;
+    }
+
+    public void writeTree(Node node, BitFileWriter writer) {
+        byte currentByte;
+        if (node.isChar()) {
+            if (node.character == ' ') {
+                currentByte = 26;
+            }
+            else if (node.character == ',') {
+                currentByte = 27;
+            }
+            else {
+                currentByte = (byte) ('a' - node.character);
+            }
+            try {
+                writer.writeBit(true);
+                writer.writeByte(currentByte);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            try {
+                writer.writeBit(false);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            writeTree(node.left, writer);
+            writeTree(node.right, writer);
+        }
     }
 
     public Node getTree() {
