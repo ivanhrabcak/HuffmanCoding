@@ -1,5 +1,6 @@
 package me.ivik.huffmanalgorithm;
 
+import me.ivik.huffmanalgorithm.bitstreams.BitFileReader;
 import me.ivik.huffmanalgorithm.bitstreams.BitFileWriter;
 import me.ivik.huffmanalgorithm.tree.Node;
 
@@ -110,6 +111,33 @@ public class HuffmanCoding {
             }
             writeTree(node.left, writer);
             writeTree(node.right, writer);
+        }
+    }
+
+    public Node readTree(BitFileReader reader) {
+        try {
+            if (reader.readBit()) {
+                int characterNumber = reader.readByte();
+                char character;
+                if (characterNumber == 26) {
+                    character = ' ';
+                }
+                else if (characterNumber == 27) {
+                    character = ',';
+                }
+                else {
+                    character = (char) ('a' - characterNumber);
+                }
+                return new Node(null, null, character);
+            }
+            else {
+                Node left = readTree(reader);
+                Node right = readTree(reader);
+                return new Node(left, right, -1);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

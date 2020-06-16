@@ -17,7 +17,19 @@ public class BitFileReader {
         return stream.read();
     }
 
-    public boolean readByte() {
-        // TODO: Finish
+    public byte readByte() throws IOException {
+        boolean[] bits = new boolean[8];
+        for (int i = 7; i >= 0; i--) {
+            bits[i] = stream.read();
+        }
+        byte b = 0;
+        int k = 1;
+        for (int i = 7; i >= 0; i--) {
+            if (bits[i]) {
+                b += k;
+            }
+            k += k * 2;
+        }
+        return b;
     }
 }
