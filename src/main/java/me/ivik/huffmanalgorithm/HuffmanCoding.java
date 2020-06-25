@@ -1,7 +1,7 @@
 package me.ivik.huffmanalgorithm;
 
-import me.ivik.huffmanalgorithm.bitstreams.BitFileReader;
-import me.ivik.huffmanalgorithm.bitstreams.BitFileWriter;
+import me.ivik.huffmanalgorithm.bitoperations.BitFileReader;
+import me.ivik.huffmanalgorithm.bitoperations.BitFileWriter;
 import me.ivik.huffmanalgorithm.tree.Node;
 
 import java.io.IOException;
@@ -84,6 +84,16 @@ public class HuffmanCoding {
         return output;
     }
 
+    private boolean[] byteToBooleanArray(byte b) { // kinda dumb
+        boolean[] output = new boolean[8];
+        String binaryString = Integer.toBinaryString(b);
+        System.out.println(binaryString);
+        for (int i = 0; i < binaryString.length() - 1; i++) {
+            output[i] = binaryString.charAt(i) == '1';
+        }
+        return output;
+    }
+
     public void writeTree(Node node, BitFileWriter writer) {
         byte currentByte;
         if (node.isChar()) {
@@ -96,19 +106,11 @@ public class HuffmanCoding {
             else {
                 currentByte = (byte) ('a' - node.character);
             }
-            try {
-                writer.writeBit(true);
-                writer.writeByte(currentByte);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writer.write(true);
+            writer.write(byteToBooleanArray(currentByte));
         }
         else {
-            try {
-                writer.writeBit(false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            writer.write(false);
             writeTree(node.left, writer);
             writeTree(node.right, writer);
         }
