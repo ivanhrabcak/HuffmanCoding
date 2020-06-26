@@ -1,16 +1,26 @@
 package me.ivik.huffmanalgorithm.test;
 
 import me.ivik.huffmanalgorithm.bitoperations.BitFileReader;
+import me.ivik.huffmanalgorithm.bitoperations.BitFileWriter;
 import org.junit.Test;
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class BitFileOperationsTest {
+    @Test
+    public void testWriting() throws IOException {
+        File testFile = new File("test.bin");
+        testFile.delete();
+        testFile.createNewFile();
+        BitFileWriter testWriter = new BitFileWriter(testFile);
+        testWriter.write(new boolean[]{true, false, true, true, false}); // 0b10110 == 22
+        FileInputStream inputStream = new FileInputStream(new File("test.bin"));
+        assertEquals(22, inputStream.read());
+    }
 
-public class BitFileReaderTest {
     @Test
     public void testReading() throws IOException {
         File testFile = new File("readtest.bin");

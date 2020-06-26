@@ -39,4 +39,8 @@ public class BitFileWriter {
             e.printStackTrace();
         }
     }
+
+    public void close() {
+        writeBuffer();
+    }
 }

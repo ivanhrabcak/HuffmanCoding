@@ -94,28 +94,6 @@ public class HuffmanCoding {
         return output;
     }
 
-    public void writeTree(Node node, BitFileWriter writer) {
-        byte currentByte;
-        if (node.isChar()) {
-            if (node.character == ' ') {
-                currentByte = 26;
-            }
-            else if (node.character == ',') {
-                currentByte = 27;
-            }
-            else {
-                currentByte = (byte) ('a' - node.character);
-            }
-            writer.write(true);
-            writer.write(byteToBooleanArray(currentByte));
-        }
-        else {
-            writer.write(false);
-            writeTree(node.left, writer);
-            writeTree(node.right, writer);
-        }
-    }
-
     public Node readTree(BitFileReader reader) {
         try {
             if (reader.readBit()) {
@@ -170,6 +148,30 @@ public class HuffmanCoding {
         }
 
         return priorityQueue.poll();
+    }
+
+    public void writeTree(Node node, BitFileWriter writer) {
+        byte currentByte;
+        if (node.isChar()) {
+            if (node.character == ' ') {
+                currentByte = 26;
+            }
+            else if (node.character == ',') {
+                currentByte = 27;
+            }
+            else {
+                currentByte = (byte) ('a' - node.character);
+            }
+            writer.write(true);
+            writer.write(byteToBooleanArray(currentByte));
+        }
+        else {
+            writer.write(false);
+            writeTree(node.left, writer);
+            writeTree(node.right, writer);
+        }
+
+
     }
 
     private void createCharFrequencyArray() {
