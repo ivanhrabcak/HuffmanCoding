@@ -86,10 +86,9 @@ public class HuffmanCoding {
 
     private boolean[] byteToBooleanArray(byte b) { // kinda dumb
         boolean[] output = new boolean[8];
-        String binaryString = Integer.toBinaryString(b);
-        System.out.println(binaryString);
-        for (int i = 0; i < binaryString.length() - 1; i++) {
-            output[i] = binaryString.charAt(i) == '1';
+        System.out.println(b);
+        for (int i = 0; i < 8; i++) {
+            output[i] = (b & (1 << i)) != 0;
         }
         return output;
     }
@@ -106,7 +105,7 @@ public class HuffmanCoding {
                     character = ',';
                 }
                 else {
-                    character = (char) ('a' - characterNumber);
+                    character = (char) (characterNumber - 'a');
                 }
                 return new Node(null, null, character);
             }
@@ -151,6 +150,11 @@ public class HuffmanCoding {
     }
 
     public void writeTree(Node node, BitFileWriter writer) {
+        writeTreeInternal(node, writer);
+        writer.close();
+    }
+
+    private void writeTreeInternal(Node node, BitFileWriter writer) {
         byte currentByte;
         if (node.isChar()) {
             if (node.character == ' ') {
@@ -160,7 +164,7 @@ public class HuffmanCoding {
                 currentByte = 27;
             }
             else {
-                currentByte = (byte) ('a' - node.character);
+                currentByte = (byte) (node.character - 'a');
             }
             writer.write(true);
             writer.write(byteToBooleanArray(currentByte));
@@ -170,7 +174,6 @@ public class HuffmanCoding {
             writeTree(node.left, writer);
             writeTree(node.right, writer);
         }
-
 
     }
 

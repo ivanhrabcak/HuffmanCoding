@@ -7,6 +7,15 @@ public class BitFileWriter {
     private byte buffer;
     private int byteIndex;
 
+    public BitFileWriter(File file) {
+        try {
+            this.stream = new FileOutputStream(file);
+            byteIndex = 7;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void writeBuffer() {
         try {
             stream.write(buffer);
@@ -23,22 +32,20 @@ public class BitFileWriter {
     }
 
     public void write(boolean bit) {
-        if (byteIndex == 7) {
+        if (bit) {
+            buffer = (byte) ((0b1 << byteIndex) | buffer);
+        }
+
+        if (byteIndex == 0) {
+            byteIndex = 7;
             writeBuffer();
         }
-        if (bit) {
-            buffer = (byte) ((0b1 >> byteIndex) | buffer);
+        else {
+            byteIndex--;
         }
-        byteIndex++;
     }
 
-    public BitFileWriter(File file) {
-        try {
-            this.stream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     public void close() {
         writeBuffer();
